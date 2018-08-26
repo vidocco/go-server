@@ -12,7 +12,7 @@ func logger(h http.Handler) http.Handler {
 	})
 }
 
-func enableCors(h http.Handler) http.Handler {
+func cors(h http.Handler) http.Handler {
 	return http.HandlerFunc(func (w http.ResponseWriter, r *http.Request) {
 		(w).Header().Set("Access-Control-Allow-Origin", "*")
 		h.ServeHTTP(w, r)
@@ -21,6 +21,6 @@ func enableCors(h http.Handler) http.Handler {
 
 func ApplyMiddleware(handler http.Handler) http.Handler {
 	handler = logger(handler)
-	handler = enableCors(handler)
+	handler = cors(handler)
 	return handler
 }
