@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"github.com/gorilla/mux"
 	"net/http"
 	"log"
 )
@@ -13,7 +12,15 @@ func logger(h http.Handler) http.Handler {
 	})
 }
 
-func ApplyMiddleware(router *mux.Router) http.Handler {
-	handler := logger(router)
+func enableCors(h http.Handler) http.Handler {
+	return http.HandlerFunc(func (w http.ResponseWriter, r *http.Request) {
+		(w).Header().Set("Access-Control-Allow-Origin", "*")
+		h.ServeHTTP(w, r)
+	})
+}
+
+func ApplyMiddleware(handler http.Handler) http.Handler {
+	handler = logger(handler)
+	handler = enableCors(handler)
 	return handler
 }
