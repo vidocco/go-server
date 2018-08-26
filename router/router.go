@@ -1,26 +1,22 @@
 package router
 
 import (
-	"github.com/gorilla/mux"
+	"github.com/naoina/denco"
 	"net/http"
+	"go-server/controllers"
 )
 
-func NewRouter() *mux.Router {
-	router := mux.NewRouter().StrictSlash(true)
+func NewRouter() http.Handler {
+	mux := denco.NewMux()
 
-	for _, route := range routes {
-		var handler http.Handler
-		handler = route.HandlerFunc
+	router, err := mux.Build([]denco.Handler{
+		mux.GET("/users", controllers.GetAllUsers),
+		mux.GET("/users/:userId", controllers.GetUser),
+		mux.POST("/users", controllers.PostUser),
+	})
 
-		// Route middleware would go here as such:
-		// handler = route.HandlerFunc
-		// handler = Logger(handler, route.Name)
-
-		router.
-			Methods(route.Method).
-			Path(route.Pattern).
-			Name(route.Name).
-			Handler(handler)
+	if err != nil {
+		panic(err)
 	}
 	return router
 }
