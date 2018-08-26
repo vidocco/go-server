@@ -2,15 +2,15 @@ package controllers
 
 import (
 	"net/http"
-	"github.com/gorilla/mux"
 	"go-server/models"
 	"strconv"
 	"encoding/json"
+	"github.com/naoina/denco"
 )
 
-func GetUser (w http.ResponseWriter, r *http.Request) {
-	query := mux.Vars(r)
-	id, err := strconv.Atoi(query["userId"])
+func GetUser (w http.ResponseWriter, r *http.Request, params denco.Params) {
+	query := params.Get("userId")
+	id, err := strconv.Atoi(query)
 	if err != nil {
 		panic(err)
 	}
@@ -25,7 +25,7 @@ func GetUser (w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func GetAllUsers (w http.ResponseWriter, r *http.Request) {
+func GetAllUsers (w http.ResponseWriter, r *http.Request, params denco.Params) {
 	result := models.FindAllUsers()
 
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
@@ -41,7 +41,7 @@ type userName struct{
 	Name string
 }
 
-func PostUser (w http.ResponseWriter, r *http.Request) {
+func PostUser (w http.ResponseWriter, r *http.Request, params denco.Params) {
 	decoder := json.NewDecoder(r.Body)
 
 	/*
